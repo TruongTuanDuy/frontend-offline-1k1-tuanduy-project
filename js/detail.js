@@ -1,6 +1,3 @@
-const featurePost = document.getElementById("feature-post");
-const mainMenuDesktop = document.getElementById("main-menu-desktop");
-const mainMenuMobile = document.getElementById("main-menu-mobile");
 const article = document.getElementById("article");
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -40,54 +37,6 @@ axios
     console.log(error);
   });
 
-// Menu Desktop
-axios
-  .get(
-    "https://apiforlearning.zendvn.com/api/categories_news?offset=0&limit=20"
-  )
-  .then(function (response) {
-    // handle success
-    const catagories = response.data;
-    let category = ``;
-    let categoryOther = ``;
-    let categoryOtherMobile = ``;
-    for (var i = 0; i < catagories.length; i++) {
-      const categoryLink = "category.html?id=" + catagories[i].id;
-      if (i < 3) {
-        category += `<li><a href="${categoryLink}">${catagories[i].name}</a></li>`;
-      } else {
-        categoryOther += `<li><a href="${categoryLink}">${catagories[i].name}</a></li>`;
-      }
-    }
-
-    if (categoryOther) {
-      categoryOtherMobile = `
-    <li>
-      <a href="#">Danh mục khác</a>
-      <ul class="sub-menu-m">
-        ${categoryOther}
-      </ul>
-      <span class="arrow-main-menu-m">
-        <i class="fa fa-angle-right" aria-hidden="true"></i>
-      </span>
-    </li>`;
-      categoryOther = `
-    <li>
-      <a href="#">Danh mục khác&nbsp;<i class="fas fa-angle-down"></i></a>
-      <ul class="sub-menu">
-        ${categoryOther}
-      </ul>
-    </li>`;
-    }
-    mainMenuDesktop.innerHTML = category + categoryOther;
-    mainMenuMobile.innerHTML = category + categoryOtherMobile;
-
-    addEventForMobileMenu();
-  })
-  .catch(function (error) {
-    // handle error
-    console.log(error);
-  });
 
 // Content
 axios
@@ -95,13 +44,14 @@ axios
     `https://apiforlearning.zendvn.com/api/articles/${id}`
   )
   .then(function (response) {
+    console.log(response);
     // handle success
 
     const articleContent = response.data;
 
     let currentTime = new Date().getTime()
     let publishTime = new Date(articleContent.publish_date).getTime();
-    var time = millisecondsToStr(currentTime - publishTime);
+    var time = dayjs(articleContent.publish_date).fromNow();
 
     let content = `<div class="p-b-70" id="article">
     <a href="#" class="f1-s-10 cl2 hov-cl10 trans-03 text-uppercase">${articleContent.category.name}</a>
@@ -116,7 +66,7 @@ axios
       <a href="#" class="f1-s-3 cl8 hov-cl10 trans-03 m-r-15">0 Comment</a>
     </div>
     <div class="wrap-pic-max-w p-b-30"><img src="${articleContent.thumb}"></div>
-    <p class="f1-s-11 cl6 p-b-25">${articleContent.content}</p>
+    <div class="f1-s-11 cl6 p-b-25">${articleContent.content}</div>
 
     <!-- Tag -->
     <div class="flex-s-s p-t-12 p-b-15">

@@ -1,5 +1,4 @@
-const mainMenuDesktop = document.getElementById("main-menu-desktop");
-const mainMenuMobile = document.getElementById("main-menu-mobile");
+
 const featurePost = document.getElementById("feature-post");
 const mostPopular = document.getElementById("most-popular");
 const entertainment = document.getElementById("entertainment");
@@ -8,7 +7,7 @@ const lastest = document.getElementById("lastest");
 
 // Lastest
 axios
-  .get("https://apiforlearning.zendvn.com/api/articles/vnexpress")
+  .get("articles")
   .then(function (response) {
     // handle success
     const lastestList = response.data;
@@ -21,6 +20,7 @@ axios
 
     let content = ``;
     for (var i = 0; i < lastestList.length; i++) {
+      const pubDate = dayjs(lastestList[i].publish_date).fromNow();
       content += `
 <!-- Item post -->
 <div class="flex-wr-sb-s p-t-40 p-b-15 how-bor2">
@@ -42,7 +42,7 @@ axios
 
       <span class="f1-s-3 m-rl-3"> - </span>
 
-      <span class="f1-s-3"> ${lastestList[i].publish_date} </span>
+      <span class="f1-s-3"> ${pubDate} </span>
     </div>
 
     <p class="f1-s-1 cl6 p-b-24">
@@ -147,57 +147,6 @@ axios
     </div>
   </div>`
     entertainment.innerHTML = content;
-  })
-  .catch(function (error) {
-    // handle error
-    console.log(error);
-  });
-
-
-// Menu Desktop
-axios
-  .get(
-    "https://apiforlearning.zendvn.com/api/categories_news?offset=0&limit=20"
-  )
-  .then(function (response) {
-
-    // handle success
-    const catagories = response.data;
-    let category = ``;
-    let categoryOther = ``;
-    let categoryOtherMobile = ``;
-    for (var i = 0; i < catagories.length; i++) {
-      const categoryLink = 'category.html?id=' + catagories[i].id;
-      if (i < 3) {
-        category += `<li><a href="${categoryLink}">${catagories[i].name}</a></li>`;
-      } else {
-        categoryOther += `<li><a href="${categoryLink}">${catagories[i].name}</a></li>`;
-      }
-    }
-
-    if (categoryOther) {
-      categoryOtherMobile = `
-      <li>
-        <a href="#">Danh mục khác</a>
-        <ul class="sub-menu-m">
-          ${categoryOther}
-        </ul>
-        <span class="arrow-main-menu-m">
-          <i class="fa fa-angle-right" aria-hidden="true"></i>
-        </span>
-      </li>`;
-      categoryOther = `
-      <li>
-        <a href="#">Danh mục khác&nbsp;<i class="fas fa-angle-down"></i></a>
-        <ul class="sub-menu">
-          ${categoryOther}
-        </ul>
-      </li>`;
-    }
-    mainMenuDesktop.innerHTML = category + categoryOther;
-    mainMenuMobile.innerHTML = category + categoryOtherMobile;
-
-    addEventForMobileMenu();
   })
   .catch(function (error) {
     // handle error

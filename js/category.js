@@ -1,6 +1,4 @@
 const featurePost = document.getElementById("feature-post");
-const mainMenuDesktop = document.getElementById("main-menu-desktop");
-const mainMenuMobile = document.getElementById("main-menu-mobile");
 const articles = document.getElementById("articles");
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -40,55 +38,6 @@ axios
     console.log(error);
   });
 
-// Menu Desktop
-axios
-  .get(
-    "https://apiforlearning.zendvn.com/api/categories_news?offset=0&limit=20"
-  )
-  .then(function (response) {
-    // handle success
-    const catagories = response.data;
-    let category = ``;
-    let categoryOther = ``;
-    let categoryOtherMobile = ``;
-    for (var i = 0; i < catagories.length; i++) {
-      const categoryLink = "category.html?id=" + catagories[i].id;
-      if (i < 3) {
-        category += `<li><a href="${categoryLink}">${catagories[i].name}</a></li>`;
-      } else {
-        categoryOther += `<li><a href="${categoryLink}">${catagories[i].name}</a></li>`;
-      }
-    }
-
-    if (categoryOther) {
-      categoryOtherMobile = `
-    <li>
-      <a href="#">Danh mục khác</a>
-      <ul class="sub-menu-m">
-        ${categoryOther}
-      </ul>
-      <span class="arrow-main-menu-m">
-        <i class="fa fa-angle-right" aria-hidden="true"></i>
-      </span>
-    </li>`;
-      categoryOther = `
-    <li>
-      <a href="#">Danh mục khác&nbsp;<i class="fas fa-angle-down"></i></a>
-      <ul class="sub-menu">
-        ${categoryOther}
-      </ul>
-    </li>`;
-    }
-    mainMenuDesktop.innerHTML = category + categoryOther;
-    mainMenuMobile.innerHTML = category + categoryOtherMobile;
-
-    addEventForMobileMenu();
-  })
-  .catch(function (error) {
-    // handle error
-    console.log(error);
-  });
-
 // Articles
 axios
   .get(
@@ -102,29 +51,7 @@ axios
 
     let articleItem = ``;
     for (var i = 0; i < articleList.length; i++) {
-      articleItem += `
-      <div class="col-sm-6 p-r-25 p-r-15-sr991">
-      <!-- Item latest -->
-      <div class="m-b-45">
-          <a href="${articleList[i].link}" class="wrap-pic-w hov1 trans-03">
-              <img src="${articleList[i].thumb}" alt="IMG">
-          </a>
-
-          <div class="p-t-16">
-              <h5 class="p-b-5">
-                  <a href=href="${articleList[i].link}" class="f1-m-3 cl2 hov-cl10 trans-03">
-                  ${articleList[i].title}
-                  </a>
-              </h5>
-
-              <span class="cl8">
-                  <a href="#" class="f1-s-4 cl8 hov-cl10 trans-03">${articleList[i].publish_date}</a>
-                  <span class="f1-s-3 m-rl-3">-</span>
-                  <span class="f1-s-3">Feb 18</span>
-              </span>
-          </div>
-      </div>
-  </div>`;
+      articleItem += renderArticleItem(articleList[i]);
     }
     articles.innerHTML = articleItem;
   })
@@ -132,6 +59,31 @@ axios
     // handle error
     console.log(error);
   });
+
+function renderArticleItem(item) {
+  return `
+  <div class="col-sm-6 p-r-25 p-r-15-sr991">
+      <div class="m-b-45">
+          <a href="${item.link}" class="wrap-pic-w hov1 trans-03">
+              <img src="${item.thumb}" alt="IMG">
+          </a>
+
+          <div class="p-t-16">
+              <h5 class="p-b-5">
+                  <a href=href="${item.link}" class="f1-m-3 cl2 hov-cl10 trans-03">
+                  ${item.title}
+                  </a>
+              </h5>
+
+              <span class="cl8">
+                  <a href="#" class="f1-s-4 cl8 hov-cl10 trans-03">${item.publish_date}</a>
+                  <span class="f1-s-3 m-rl-3">-</span>
+                  <span class="f1-s-3">Feb 18</span>
+              </span>
+          </div>
+      </div>
+  </div>`;
+}
 
 function addEventForMobileMenu() {
   try {
