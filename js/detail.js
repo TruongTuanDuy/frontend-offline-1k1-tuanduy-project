@@ -1,11 +1,11 @@
 const featurePost = document.getElementById("feature-post");
 const mainMenuDesktop = document.getElementById("main-menu-desktop");
 const mainMenuMobile = document.getElementById("main-menu-mobile");
-const articles = document.getElementById("articles");
+const article = document.getElementById("article");
 
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get("id");
-console.log(id);
+
 
 
 // Top Articles
@@ -89,44 +89,88 @@ axios
     console.log(error);
   });
 
-// Articles
+// Content
 axios
   .get(
-    `https://apiforlearning.zendvn.com/api/categories_news/${id}/articles?offset=0&limit=10&sort_by=id&sort_dir=desc`
+    `https://apiforlearning.zendvn.com/api/articles/${id}`
   )
   .then(function (response) {
     // handle success
 
-    const articleList = response.data;
-    document.getElementById("page-heading").textContent = articleList[1].category.name;
+    const articleContent = response.data;
 
-    let articleItem = ``;
-    for (var i = 0; i < articleList.length; i++) {
-      articleItem += `
-      <div class="col-sm-6 p-r-25 p-r-15-sr991">
-      <!-- Item latest -->
-      <div class="m-b-45">
-          <a href="${articleList[i].link}" class="wrap-pic-w hov1 trans-03">
-              <img src="${articleList[i].thumb}" alt="IMG">
-          </a>
+    let currentTime = new Date().getTime()
+    let publishTime = new Date(articleContent.publish_date).getTime();
+    var time = millisecondsToStr(currentTime - publishTime);
 
-          <div class="p-t-16">
-              <h5 class="p-b-5">
-                  <a href=href="${articleList[i].link}" class="f1-m-3 cl2 hov-cl10 trans-03">
-                  ${articleList[i].title}
-                  </a>
-              </h5>
+    let content = `<div class="p-b-70" id="article">
+    <a href="#" class="f1-s-10 cl2 hov-cl10 trans-03 text-uppercase">${articleContent.category.name}</a>
+    <h3 class="f1-l-3 cl2 p-b-16 p-t-33 respon2">${articleContent.title}</h3>
+    <div class="flex-wr-s-s p-b-40">
+      <span class="f1-s-3 cl8 m-r-15">
+        <a href="#" class="f1-s-4 cl8 hov-cl10 trans-03">by John Alvarado</a>
+        <span class="m-rl-3">-</span>
+        <span>${time}</span>
+      </span>
+      <span class="f1-s-3 cl8 m-r-15">5239 Views</span>
+      <a href="#" class="f1-s-3 cl8 hov-cl10 trans-03 m-r-15">0 Comment</a>
+    </div>
+    <div class="wrap-pic-max-w p-b-30"><img src="${articleContent.thumb}"></div>
+    <p class="f1-s-11 cl6 p-b-25">${articleContent.content}</p>
 
-              <span class="cl8">
-                  <a href="#" class="f1-s-4 cl8 hov-cl10 trans-03">${articleList[i].publish_date}</a>
-                  <span class="f1-s-3 m-rl-3">-</span>
-                  <span class="f1-s-3">Feb 18</span>
-              </span>
-          </div>
+    <!-- Tag -->
+    <div class="flex-s-s p-t-12 p-b-15">
+      <span class="f1-s-12 cl5 m-r-8">
+        Tags:
+      </span>
+
+      <div class="flex-wr-s-s size-w-0">
+        <a href="#" class="f1-s-12 cl8 hov-link1 m-r-15">
+          Streetstyle
+        </a>
+
+        <a href="#" class="f1-s-12 cl8 hov-link1 m-r-15">
+          Crafts
+        </a>
       </div>
-  </div>`;
-    }
-    articles.innerHTML = articleItem;
+    </div>
+
+    <!-- Share -->
+    <div class="flex-s-s">
+      <span class="f1-s-12 cl5 p-t-1 m-r-15">
+        Share:
+      </span>
+
+      <div class="flex-wr-s-s size-w-0">
+        <a href="#"
+          class="dis-block f1-s-13 cl0 bg-facebook borad-3 p-tb-4 p-rl-18 hov-btn1 m-r-3 m-b-3 trans-03">
+          <i class="fab fa-facebook-f m-r-7"></i>
+          Facebook
+        </a>
+
+        <a href="#"
+          class="dis-block f1-s-13 cl0 bg-twitter borad-3 p-tb-4 p-rl-18 hov-btn1 m-r-3 m-b-3 trans-03">
+          <i class="fab fa-twitter m-r-7"></i>
+          Twitter
+        </a>
+
+        <a href="#"
+          class="dis-block f1-s-13 cl0 bg-google borad-3 p-tb-4 p-rl-18 hov-btn1 m-r-3 m-b-3 trans-03">
+          <i class="fab fa-google-plus-g m-r-7"></i>
+          Google+
+        </a>
+
+        <a href="#"
+          class="dis-block f1-s-13 cl0 bg-pinterest borad-3 p-tb-4 p-rl-18 hov-btn1 m-r-3 m-b-3 trans-03">
+          <i class="fab fa-pinterest-p m-r-7"></i>
+          Pinterest
+        </a>
+      </div>
+    </div>
+  </div>
+`;
+
+    article.innerHTML = content;
   })
   .catch(function (error) {
     // handle error
@@ -167,4 +211,37 @@ function addEventForMobileMenu() {
   } catch (er) {
     console.log(er);
   }
+}
+
+function millisecondsToStr(milliseconds) {
+  // TIP: to find current time in milliseconds, use:
+  // var  current_time_milliseconds = new Date().getTime();
+
+  function numberEnding(number) {
+    return (number > 1) ? 's' : '';
+  }
+
+  var temp = Math.floor(milliseconds / 1000);
+  var years = Math.floor(temp / 31536000);
+  if (years) {
+    return years + ' year' + numberEnding(years);
+  }
+  //TODO: Months! Maybe weeks? 
+  var days = Math.floor((temp %= 31536000) / 86400);
+  if (days) {
+    return days + ' day' + numberEnding(days);
+  }
+  var hours = Math.floor((temp %= 86400) / 3600);
+  if (hours) {
+    return hours + ' hour' + numberEnding(hours);
+  }
+  var minutes = Math.floor((temp %= 3600) / 60);
+  if (minutes) {
+    return minutes + ' minute' + numberEnding(minutes);
+  }
+  var seconds = temp % 60;
+  if (seconds) {
+    return seconds + ' second' + numberEnding(seconds);
+  }
+  return 'less than a second'; //'just now' //or other string you like;
 }
