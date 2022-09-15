@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <title>Home 03</title>
+  <title>Trang chủ</title>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <!--===============================================================================================-->
@@ -88,8 +88,9 @@
       </div>
 
       <div class="pos-relative size-a-2 bo-1-rad-22 of-hidden bocl11 m-tb-6">
-        <input class="f1-s-1 cl6 plh9 s-full p-l-25 p-r-45" type="text" name="search" placeholder="Search" />
-        <button class="flex-c-c size-a-1 ab-t-r fs-20 cl2 hov-cl10 trans-03">
+        <input class="f1-s-1 cl6 plh9 s-full p-l-25 p-r-45" type="text" name="search" placeholder="Tìm kiếm"
+          id="input-search">
+        <button class="flex-c-c size-a-1 ab-t-r fs-20 cl2 hov-cl10 trans-03" id="btn-search">
           <i class="zmdi zmdi-search"></i>
         </button>
       </div>
@@ -231,7 +232,7 @@
             <!-- Other -->
             <div class="row">
               <!-- Business -->
-              <div class="col-sm-6 p-r-25 p-r-15-sr991 p-b-25">
+              <div class="col-sm-6 p-r-25 p-r-15-sr991 p-b-25" id="business">
                 <div class="how2 how2-cl2 flex-sb-c m-b-35">
                   <h3 class="f1-m-2 cl13 tab01-title">Business</h3>
 
@@ -318,7 +319,7 @@
               </div>
 
               <!-- Technology -->
-              <div class="col-sm-6 p-r-25 p-r-15-sr991 p-b-25">
+              <div class="col-sm-6 p-r-25 p-r-15-sr991 p-b-25" id="technology">
                 <div class="how2 how2-cl6 flex-sb-c m-b-35">
                   <h3 class="f1-m-2 cl18 tab01-title">Technology</h3>
 
@@ -463,7 +464,7 @@
             <!-- Most Popular -->
             <div class="p-b-30">
               <div class="how2 how2-cl4 flex-s-c">
-                <h3 class="f1-m-2 cl3 tab01-title">Most Popular</h3>
+                <h3 class="f1-m-2 cl3 tab01-title">Xem nhiều nhất</h3>
               </div>
 
               <ul class="p-t-35" id="most-popular">
@@ -586,7 +587,7 @@
         <div class="col-12 p-b-50">
           <div class="p-r-10 p-r-0-sr991">
             <div class="how2 how2-cl4 flex-s-c">
-              <h3 class="f1-m-2 cl3 tab01-title">Latest Articles</h3>
+              <h3 class="f1-m-2 cl3 tab01-title">Bài viết mới nhất</h3>
             </div>
 
             <div class="p-b-40" id="lastest">
@@ -836,7 +837,7 @@
               </div>
             </div>
 
-            <a href="#" class="flex-c-c size-a-13 bo-all-1 bocl11 f1-m-6 cl6 hov-btn1 trans-03">
+            <a href="#" class="flex-c-c size-a-13 bo-all-1 bocl11 f1-m-6 cl6 hov-btn1 trans-03" id="btn-load-more">
               Load More
             </a>
           </div>
@@ -1037,9 +1038,9 @@
 
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="vendor/dayjs/dayjs.min.js"></script>
-	<script src="vendor/dayjs/plugin/relativeTime.js"></script>
-	<script src="vendor/dayjs/locale/vi.js"></script>
-	<script src="js/dayjs-config.js"></script>
+  <script src="vendor/dayjs/plugin/relativeTime.js"></script>
+  <script src="vendor/dayjs/locale/vi.js"></script>
+  <script src="js/dayjs-config.js"></script>
   <script src="js/api.js"></script>
   <script src="js/menu.js"></script>
   <script src="js/index.js"></script>

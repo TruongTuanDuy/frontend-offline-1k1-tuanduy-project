@@ -1,9 +1,24 @@
 const featurePost = document.getElementById("feature-post");
 const articles = document.getElementById("articles");
+const category = document.getElementById("category");
+const title = document.getElementById("title");
 
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get("id");
-console.log(id);
+
+// Search
+document.getElementById('btn-search').addEventListener('click', function () {
+  const keyword = document.getElementById("input-search").value;
+  console.log(keyword);
+  window.location.href = 'search.html?keyword=' + keyword;
+})
+
+document.getElementById("input-search").addEventListener("keypress", function (event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    document.getElementById("btn-search").click();
+  }
+});
 
 
 // Top Articles
@@ -38,47 +53,95 @@ axios
     console.log(error);
   });
 
-// Articles
-axios
-  .get(
-    `https://apiforlearning.zendvn.com/api/categories_news/${id}/articles?offset=0&limit=10&sort_by=id&sort_dir=desc`
-  )
-  .then(function (response) {
-    // handle success
+let paraOffset = 0;
+let paraLimit = 4;
+loadArticle(paraOffset, paraLimit);
 
-    const articleList = response.data;
-    document.getElementById("page-heading").textContent = articleList[1].category.name;
+document.getElementById('btn-page-prev').addEventListener('click', function () {
+  paraOffset -= paraLimit;
+  loadArticle(paraOffset, paraLimit);
+})
 
-    let articleItem = ``;
-    for (var i = 0; i < articleList.length; i++) {
-      articleItem += renderArticleItem(articleList[i]);
-    }
-    articles.innerHTML = articleItem;
-  })
-  .catch(function (error) {
-    // handle error
-    console.log(error);
-  });
+document.getElementById('btn-page-next').addEventListener('click', function () {
+  paraOffset += paraLimit;
+  if (document.querySelector('.pagi-active').nextElementSibling.id == 'btn-page-next') {
+    document.getElementById('btn-page-one').innerHTML = parseInt(document.getElementById('btn-page-one').textContent) + 3;
+    document.getElementById('btn-page-two').innerHTML = parseInt(document.getElementById('btn-page-two').textContent) + 3;
+    document.getElementById('btn-page-three').innerHTML = parseInt(document.getElementById('btn-page-three').textContent) + 3;
+    document.querySelector('.pagi-active').classList.remove('pagi-active');
+    document.getElementById('btn-page-one').classList.add('pagi-active');
+    console.log(paraOffset);
+  };
+  document.querySelector('.pagi-active').nextElementSibling.classList.add('pagi-active');
+  document.querySelector('.pagi-active').classList.remove('pagi-active');
+  loadArticle(paraOffset, paraLimit);
+})
+
+document.getElementById('btn-page-one').addEventListener('click', function () {
+  paraOffset = paraLimit * 0;
+  document.querySelector('.pagi-active').classList.remove('pagi-active');
+  document.getElementById('btn-page-one').classList.add('pagi-active');
+  loadArticle(paraOffset, paraLimit);
+})
+
+document.getElementById('btn-page-two').addEventListener('click', function () {
+  paraOffset = paraLimit * 1;
+  document.querySelector('.pagi-active').classList.remove('pagi-active');
+  document.getElementById('btn-page-two').classList.add('pagi-active');
+  loadArticle(paraOffset, paraLimit);
+})
+
+document.getElementById('btn-page-three').addEventListener('click', function () {
+  paraOffset = paraLimit * 2;
+  document.querySelector('.pagi-active').classList.remove('pagi-active');
+  document.getElementById('btn-page-three').classList.add('pagi-active');
+  loadArticle(paraOffset, paraLimit);
+})
+
+
+function loadArticle(offset, limit) {
+  // Articles
+  axios
+    .get(
+      `https://apiforlearning.zendvn.com/api/categories_news/${id}/articles?offset=${offset}&limit=${limit}&sort_by=id&sort_dir=desc`
+    )
+    .then(function (response) {
+      // handle success
+
+      const articleList = response.data;
+      document.getElementById("page-heading").textContent = articleList[1].category.name;
+      category.innerHTML = articleList[1].category.name
+      title.innerHTML = articleList[1].category.name
+
+      let articleItem = ``;
+      for (var i = 0; i < articleList.length; i++) {
+        articleItem += renderArticleItem(articleList[i]);
+      }
+      articles.innerHTML = articleItem;
+    })
+    .catch(function (error) {
+      // handle error
+      console.log(error);
+    });
+
+}
 
 function renderArticleItem(item) {
+  const pubDate = dayjs(item.publish_date).fromNow();
   return `
   <div class="col-sm-6 p-r-25 p-r-15-sr991">
       <div class="m-b-45">
           <a href="${item.link}" class="wrap-pic-w hov1 trans-03">
               <img src="${item.thumb}" alt="IMG">
           </a>
-
           <div class="p-t-16">
               <h5 class="p-b-5">
                   <a href=href="${item.link}" class="f1-m-3 cl2 hov-cl10 trans-03">
                   ${item.title}
                   </a>
               </h5>
-
               <span class="cl8">
-                  <a href="#" class="f1-s-4 cl8 hov-cl10 trans-03">${item.publish_date}</a>
-                  <span class="f1-s-3 m-rl-3">-</span>
-                  <span class="f1-s-3">Feb 18</span>
+                  <span class="f1-s-3">${pubDate}</span>
               </span>
           </div>
       </div>

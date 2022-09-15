@@ -1,70 +1,243 @@
 
 const featurePost = document.getElementById("feature-post");
 const mostPopular = document.getElementById("most-popular");
-const entertainment = document.getElementById("entertainment");
+const entertainment = document.getElementById("entertainment"); // Thế giới
+const business = document.getElementById("business"); // Thời sự
+const technology = document.getElementById("technology"); // Kinh doanh
 const lastest = document.getElementById("lastest");
+let paraLimit = 5;
+loadLatest(paraLimit);
+
+// Load More
+document.getElementById('btn-load-more').addEventListener('click', function () {
+  paraLimit += 2;
+  loadLatest(paraLimit)
+})
+
+// Search
+document.getElementById('btn-search').addEventListener('click', function () {
+  const keyword = document.getElementById("input-search").value;
+  console.log(keyword);
+  window.location.href = 'search.html?keyword=' + keyword;
+})
+document.getElementById("input-search").addEventListener("keypress", function (event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    document.getElementById("btn-search").click();
+  }
+});
 
 
-// Lastest
+function loadLatest(limit) {
+  // Lastest
+  axios
+    .get(`articles?offset=0&limit=${limit}&sort_by=id&sort_dir=desc`)
+    .then(function (response) {
+      // handle success
+      const lastestList = response.data;
+      let content = ``;
+      for (var i = 0; i < lastestList.length; i++) {
+        const pubDate = dayjs(lastestList[i].publish_date).fromNow();
+        const detailLink = 'detail.html?id=' + lastestList[i].id;
+
+        content += `
+      <!-- Item post -->
+      <div class="flex-wr-sb-s p-t-40 p-b-15 how-bor2">
+        <a href="${detailLink}" class="size-w-8 wrap-pic-w hov1 trans-03 w-full-sr575 m-b-25">
+          <img src="${lastestList[i].thumb}" alt="IMG" />
+        </a>
+        <div class="size-w-9 w-full-sr575 m-b-25">
+          <h5 class="p-b-12">
+            <a href="${detailLink}" class="f1-l-1 cl2 hov-cl10 trans-03 respon2">
+            ${lastestList[i].title}
+            </a>
+          </h5>
+          <div class="cl8 p-b-18">
+            <span class="f1-s-3"> ${pubDate} </span>
+          </div>
+          <p class="f1-s-1 cl6 p-b-24">
+          ${lastestList[i].description}
+          </p>
+        </div>
+      </div>
+    `}
+      lastest.innerHTML = content;
+    })
+    .catch(function (error) {
+      // handle error
+      console.log(error);
+    });
+}
+
+
+
+// Post - Kinh Doanh
 axios
-  .get("articles")
+  .get("https://apiforlearning.zendvn.com/api/categories_news/3/articles?offset=0&limit=10&sort_by=id&sort_dir=desc")
   .then(function (response) {
     // handle success
-    const lastestList = response.data;
-    const lastestListUnsort = response.data;
-
-    console.log(lastestListUnsort);
-
-    lastestList.sort((a, b) => a.publish_date - b.publish_date);
-    console.log(lastestList);
-
+    const postList = response.data;
     let content = ``;
-    for (var i = 0; i < lastestList.length; i++) {
-      const pubDate = dayjs(lastestList[i].publish_date).fromNow();
-      content += `
-<!-- Item post -->
-<div class="flex-wr-sb-s p-t-40 p-b-15 how-bor2">
-  <a href="${lastestList[i].link}" class="size-w-8 wrap-pic-w hov1 trans-03 w-full-sr575 m-b-25">
-    <img src="${lastestList[i].thumb}" alt="IMG" />
-  </a>
+    for (var i = 0; i < 3; i++) {
+      const pubDate = dayjs(postList[i].publish_date).fromNow();
+      const detailLink = 'detail.html?id=' + postList[i].id;
 
-  <div class="size-w-9 w-full-sr575 m-b-25">
-    <h5 class="p-b-12">
-      <a href="${lastestList[i].link}" class="f1-l-1 cl2 hov-cl10 trans-03 respon2">
-      ${lastestList[i].title}
-      </a>
-    </h5>
+      if (i == 0) {
+        content += `
+        <!-- Main Item post -->
+        <div class="m-b-30">
+        <a href=${detailLink} class="wrap-pic-w hov1 trans-03">
+          <img src="${postList[i].thumb}" alt="IMG" />
+        </a>
 
-    <div class="cl8 p-b-18">
-      <a href="#" class="f1-s-4 cl8 hov-cl10 trans-03">
-        by John Alvarado
-      </a>
+        <div class="p-t-20">
+          <h5 class="p-b-5">
+            <a href=${detailLink} class="f1-m-3 cl2 hov-cl10 trans-03">
+            ${postList[i].title}
+            </a>
+          </h5>
 
-      <span class="f1-s-3 m-rl-3"> - </span>
+          <span class="cl8">
+            <a href="#" class="f1-s-4 cl8 hov-cl10 trans-03">
+              Finance
+            </a>
 
-      <span class="f1-s-3"> ${pubDate} </span>
-    </div>
+            <span class="f1-s-3 m-rl-3"> - </span>
 
-    <p class="f1-s-1 cl6 p-b-24">
-    ${lastestList[i].description}
-    </p>
+            <span class="f1-s-3"> ${pubDate} </span>
+          </span>
+        </div>
+      </div>
+`;
+      } else {
+        content += `
+        <!-- Item post -->
+        <div class="flex-wr-sb-s m-b-30">
+        <a href=${detailLink} class="size-w-1 wrap-pic-w hov1 trans-03">
+          <img src="${postList[i].thumb}" alt="IMGDonec metus orci, malesuada et lectus vitae" />
+        </a>
 
-    <a href="${lastestList[i].link}" class="f1-s-1 cl9 hov-cl10 trans-03">
-      Read More
-      <i class="m-l-2 fa fa-long-arrow-alt-right"></i>
+        <div class="size-w-2">
+          <h5 class="p-b-5">
+            <a href=${detailLink} class="f1-s-5 cl3 hov-cl10 trans-03">
+            ${postList[i].title}
+            </a>
+          </h5>
+
+          <span class="cl8">
+            <a href="#" class="f1-s-6 cl8 hov-cl10 trans-03">
+              Small Business
+            </a>
+
+            <span class="f1-s-3 m-rl-3"> - </span>
+
+            <span class="f1-s-3"> ${pubDate} </span>
+          </span>
+        </div>
+      </div>
+`      }
+    }
+    content = `                <div class="how2 how2-cl2 flex-sb-c m-b-35">
+    <h3 class="f1-m-2 cl13 tab01-title">${postList[0].category.name}</h3>
+
+    <a href="category-01.html" class="tab01-link f1-s-1 cl9 hov-cl10 trans-03">
+      Xem tất cả
+      <i class="fs-12 m-l-5 fa fa-caret-right"></i>
     </a>
   </div>
-</div>
-`    }
-
-    lastest.innerHTML = content;
+`
+      + content +
+      `</div>`
+    technology.innerHTML = content;
   })
   .catch(function (error) {
     // handle error
     console.log(error);
   });
 
+// Post - Thời Sự
+axios
+  .get("https://apiforlearning.zendvn.com/api/categories_news/2/articles?offset=0&limit=10&sort_by=id&sort_dir=desc")
+  .then(function (response) {
+    // handle success
+    const postList = response.data;
+    let content = ``;
+    for (var i = 0; i < 3; i++) {
+      const pubDate = dayjs(postList[i].publish_date).fromNow();
+      const detailLink = 'detail.html?id=' + postList[i].id;
 
+      if (i == 0) {
+        content += `
+        <!-- Main Item post -->
+        <div class="m-b-30">
+        <a href=${detailLink} class="wrap-pic-w hov1 trans-03">
+          <img src="${postList[i].thumb}" alt="IMG" />
+        </a>
+
+        <div class="p-t-20">
+          <h5 class="p-b-5">
+            <a href=${detailLink} class="f1-m-3 cl2 hov-cl10 trans-03">
+            ${postList[i].title}
+            </a>
+          </h5>
+
+          <span class="cl8">
+            <a href="#" class="f1-s-4 cl8 hov-cl10 trans-03">
+              Finance
+            </a>
+
+            <span class="f1-s-3 m-rl-3"> - </span>
+
+            <span class="f1-s-3"> ${pubDate} </span>
+          </span>
+        </div>
+      </div>
+`;
+      } else {
+        content += `
+        <!-- Item post -->
+        <div class="flex-wr-sb-s m-b-30">
+        <a href=${detailLink} class="size-w-1 wrap-pic-w hov1 trans-03">
+          <img src="${postList[i].thumb}" alt="IMGDonec metus orci, malesuada et lectus vitae" />
+        </a>
+
+        <div class="size-w-2">
+          <h5 class="p-b-5">
+            <a href=${detailLink} class="f1-s-5 cl3 hov-cl10 trans-03">
+            ${postList[i].title}
+            </a>
+          </h5>
+
+          <span class="cl8">
+            <a href="#" class="f1-s-6 cl8 hov-cl10 trans-03">
+              Small Business
+            </a>
+
+            <span class="f1-s-3 m-rl-3"> - </span>
+
+            <span class="f1-s-3"> ${pubDate} </span>
+          </span>
+        </div>
+      </div>
+`      }
+    }
+    content = `                <div class="how2 how2-cl2 flex-sb-c m-b-35">
+    <h3 class="f1-m-2 cl13 tab01-title">${postList[0].category.name}</h3>
+
+    <a href="category-01.html" class="tab01-link f1-s-1 cl9 hov-cl10 trans-03">
+      Xem tất cả
+      <i class="fs-12 m-l-5 fa fa-caret-right"></i>
+    </a>
+  </div>
+`
+      + content +
+      `</div>`
+    business.innerHTML = content;
+  })
+  .catch(function (error) {
+    // handle error
+    console.log(error);
+  });
 
 // Post - Thế giới
 axios
@@ -74,29 +247,26 @@ axios
     const postList = response.data;
     let content = ``;
     for (var i = 0; i < 4; i++) {
+      const pubDate = dayjs(postList[i].publish_date).fromNow();
+      const detailLink = 'detail.html?id=' + postList[i].id;
+
       if (i == 0) {
         content += `
         <!-- Item post -->
         <div class="m-b-30">
-          <a href="${postList[i].link}" class="wrap-pic-w hov1 trans-03">
+          <a href="${detailLink}" class="wrap-pic-w hov1 trans-03">
             <img src="${postList[i].thumb}" />
           </a>
 
           <div class="p-t-20">
             <h5 class="p-b-5">
-              <a href="${postList[i].link}" class="f1-m-3 cl2 hov-cl10 trans-03">
+              <a href="${detailLink}" class="f1-m-3 cl2 hov-cl10 trans-03">
               ${postList[i].title}
               </a>
             </h5>
 
             <span class="cl8">
-              <a href="#" class="f1-s-4 cl8 hov-cl10 trans-03">
-                Music
-              </a>
-
-              <span class="f1-s-3 m-rl-3"> - </span>
-
-              <span class="f1-s-3"> Feb 18 </span>
+            <span class="f1-s-3"> ${pubDate} </span>
             </span>
           </div>
         </div>
@@ -107,25 +277,19 @@ axios
         content += `
         <!-- Item post -->
         <div class="flex-wr-sb-s m-b-30">
-          <a href="${postList[i].link}" class="size-w-1 wrap-pic-w hov1 trans-03">
+          <a href="${detailLink}" class="size-w-1 wrap-pic-w hov1 trans-03">
             <img src="${postList[i].thumb}" alt="IMGDonec metus orci, malesuada et lectus vitae" />
           </a>
 
           <div class="size-w-2">
             <h5 class="p-b-5">
-              <a href="${postList[i].link}" class="f1-s-5 cl3 hov-cl10 trans-03">
+              <a href="${detailLink}" class="f1-s-5 cl3 hov-cl10 trans-03">
               ${postList[i].title}
               </a>
             </h5>
 
             <span class="cl8">
-              <a href="#" class="f1-s-6 cl8 hov-cl10 trans-03">
-                Music
-              </a>
-
-              <span class="f1-s-3 m-rl-3"> - </span>
-
-              <span class="f1-s-3"> Feb 17 </span>
+              <span class="f1-s-3"> ${pubDate} </span>
             </span>
           </div>
         </div>`
@@ -135,7 +299,7 @@ axios
     <h3 class="f1-m-2 cl12 tab01-title">${postList[0].category.name}</h3>
 
     <a href="category.html?id=1" class="tab01-link f1-s-1 cl9 hov-cl10 trans-03">
-      View all
+      Xem tất cả
       <i class="fs-12 m-l-5 fa fa-caret-right"></i>
     </a>
   </div>
@@ -191,12 +355,15 @@ axios
   .then(function (response) {
     // handle success
     const popularList = response.data;
+
     let popular = ``;
     for (var i = 0; i < popularList.length; i++) {
+      const detailLink = 'detail.html?id=' + popularList[i].id;
+
       popular += `
       <li class="flex-wr-sb-s p-b-22">
         <div class="size-a-8 flex-c-c borad-3 size-a-8 bg9 f1-m-4 cl0 m-b-6">${i + 1}</div>
-        <a href="#" class="size-w-3 f1-s-7 cl3 hov-cl10 trans-03">${popularList[i].title}</a>
+        <a href="${detailLink}" class="size-w-3 f1-s-7 cl3 hov-cl10 trans-03">${popularList[i].title}</a>
       </li>`;
     }
 

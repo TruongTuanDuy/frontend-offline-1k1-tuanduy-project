@@ -1,146 +1,130 @@
-const mainMenuDesktop = document.getElementById("main-menu-desktop");
-const mainMenuMobile = document.getElementById("main-menu-mobile");
 const featurePost = document.getElementById("feature-post");
-const mostPopular = document.getElementById("most-popular");
+const articles = document.getElementById("articles");
+const category = document.getElementById("category");
+const title = document.getElementById("title");
 
-window.location.href = 'search.html?keyword=' + 'viet nam';
+const urlParams = new URLSearchParams(window.location.search);
+const keyword = urlParams.get("keyword");
+console.log(keyword);
 
-// Menu Desktop
-axios
-  .get(
-    "https://apiforlearning.zendvn.com/api/categories_news?offset=0&limit=20"
-  )
-  .then(function (response) {
+// Search
+document.getElementById('btn-search').addEventListener('click', function () {
+  const keyword = document.getElementById("input-search").value;
+  console.log(keyword);
+  window.location.href = 'search.html?keyword=' + keyword;
+})
 
-    // handle success
-    const catagories = response.data;
-    let category = ``;
-    let categoryOther = ``;
-    let categoryOtherMobile = ``;
-    for (var i = 0; i < catagories.length; i++) {
-      const categoryLink = 'category.html?id=' + catagories[i].id;
-      if (i < 3) {
-        category += `<li><a href="${categoryLink}">${catagories[i].name}</a></li>`;
-      } else {
-        categoryOther += `<li><a href="${categoryLink}">${catagories[i].name}</a></li>`;
+document.getElementById("input-search").addEventListener("keypress", function (event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    document.getElementById("btn-search").click();
+  }
+});
+
+
+let paraOffset = 0;
+let paraLimit = 4;
+loadArticle(keyword, paraOffset, paraLimit);
+
+document.getElementById('btn-page-prev').addEventListener('click', function () {
+  paraOffset -= paraLimit;
+  loadArticle(keyword, paraOffset, paraLimit);
+})
+
+document.getElementById('btn-page-next').addEventListener('click', function () {
+  paraOffset += paraLimit;
+  loadArticle(keyword, paraOffset, paraLimit);
+})
+
+
+function loadArticle(key, offset, limit) {
+  // Articles
+  axios
+    .get(
+      `https://apiforlearning.zendvn.com/api/articles/search?q=${key}&offset=${offset}&limit=${limit}&sort_by=id&sort_dir=desc`
+    )
+    .then(function (response) {
+      // handle success
+
+      const articleList = response.data;
+      document.getElementById("page-heading").textContent = `Tìm kiếm với từ: "${key}"`;
+      category.innerHTML = "Tìm kiếm"
+
+      let articleItem = ``;
+      for (var i = 0; i < articleList.length; i++) {
+        articleItem += renderArticleItem(articleList[i], key);
       }
-    }
+      articles.innerHTML = articleItem;
+    })
+    .catch(function (error) {
+      // handle error
+      console.log(error);
+    });
+}
 
-    if (categoryOther) {
-      categoryOtherMobile = `
-      <li>
-        <a href="#">Danh mục khác</a>
-        <ul class="sub-menu-m">
-          ${categoryOther}
-        </ul>
-        <span class="arrow-main-menu-m">
-          <i class="fa fa-angle-right" aria-hidden="true"></i>
-        </span>
-      </li>`;
-      categoryOther = `
-      <li>
-        <a href="#">Danh mục khác&nbsp;<i class="fas fa-angle-down"></i></a>
-        <ul class="sub-menu">
-          ${categoryOther}
-        </ul>
-      </li>`;
-    }
-    mainMenuDesktop.innerHTML = category + categoryOther;
-    mainMenuMobile.innerHTML = category + categoryOtherMobile;
+function renderArticleItem(item, key = '') {
+  const pubDate = dayjs(item.publish_date).fromNow();
 
-    addEventForMobileMenu();
-  })
-  .catch(function (error) {
-    // handle error
-    console.log(error);
-  });
+  let title = item.title;
+  if (key) {
+    let regex = new RegExp(key, "gi");
+    title = title.replace(regex, function (match) {
+      return `<mark>${match}</mark>`;
+    });
+  }
 
-// Top Articles
-axios
-  .get("https://apiforlearning.zendvn.com/api/articles/top-articles?limit=6")
-  .then(function (response) {
-    // handle success
-    const featuresList = response.data;
-    let feature = ``;
-    for (var i = 0; i < featuresList.length; i++) {
-      const categoryLink = 'category.html?id=' + featuresList[i].category_id;
-      const detailLink = 'detail.html?id=' + featuresList[i].id;
-      feature += `
-      <div class="col-sm-6 col-lg-4 p-rl-1 p-b-2">
-        <div class="bg-img1 size-a-12 how1 pos-relative" style="background-image: url(${featuresList[i].thumb})">
-          <a href="${detailLink}" class="dis-block how1-child1 trans-03"></a>
-
-          <div class="flex-col-e-s s-full p-rl-25 p-tb-11">
-            <a href="${categoryLink}" class="dis-block how1-child2 f1-s-2 cl0 bo-all-1 bocl0 hov-btn1 trans-03 p-rl-5 p-t-2">${featuresList[i].category.name}</a>
-
-            <h3 class="how1-child2 m-t-10">
-              <a href="${detailLink}" class="f1-m-1 cl0 hov-cl10 trans-03">${featuresList[i].title}</a>
-            </h3>
+  return `
+  <div class="col-sm-6 p-r-25 p-r-15-sr991">
+      <div class="m-b-45">
+          <a href="${item.link}" class="wrap-pic-w hov1 trans-03">
+              <img src="${item.thumb}" alt="IMG">
+          </a>
+          <div class="p-t-16">
+              <h5 class="p-b-5">
+                  <a href=href="${item.link}" class="f1-m-3 cl2 hov-cl10 trans-03">
+                  ${title}
+                  </a>
+              </h5>
+              <span class="cl8">
+                  <span class="f1-s-3">${pubDate}</span>
+              </span>
           </div>
-        </div>
-      </div>`;
-    }
-    featurePost.innerHTML = feature;
-  })
-  .catch(function (error) {
-    // handle error
-    console.log(error);
-  });
-
-// Most Popular
-axios
-  .get("https://apiforlearning.zendvn.com/api/articles/most-read?limit=5")
-  .then(function (response) {
-    // handle success
-    const popularList = response.data;
-    let popular = ``;
-    for (var i = 0; i < popularList.length; i++) {
-      popular += `
-      <li class="flex-wr-sb-s p-b-22">
-        <div class="size-a-8 flex-c-c borad-3 size-a-8 bg9 f1-m-4 cl0 m-b-6">${i + 1}</div>
-        <a href="#" class="size-w-3 f1-s-7 cl3 hov-cl10 trans-03">${popularList[i].title}</a>
-      </li>`;
-    }
-
-    mostPopular.innerHTML = popular;
-  })
-  .catch(function (error) {
-    // handle error
-    console.log(error);
-  });
-
+      </div>
+  </div>`;
+}
 
 function addEventForMobileMenu() {
   try {
-    $('.btn-show-menu-mobile').on('click', function () {
-      $(this).toggleClass('is-active');
-      $('.menu-mobile').slideToggle();
+    $(".btn-show-menu-mobile").on("click", function () {
+      $(this).toggleClass("is-active");
+      $(".menu-mobile").slideToggle();
     });
 
-    var arrowMainMenu = $('.arrow-main-menu-m');
+    var arrowMainMenu = $(".arrow-main-menu-m");
 
     for (var i = 0; i < arrowMainMenu.length; i++) {
-      $(arrowMainMenu[i]).on('click', function () {
-        $(this).parent().find('.sub-menu-m').slideToggle();
-        $(this).toggleClass('turn-arrow-main-menu-m');
-      })
+      $(arrowMainMenu[i]).on("click", function () {
+        $(this).parent().find(".sub-menu-m").slideToggle();
+        $(this).toggleClass("turn-arrow-main-menu-m");
+      });
     }
 
-    $(window).on('resize', function () {
+    $(window).on("resize", function () {
       if ($(window).width() >= 992) {
-        if ($('.menu-mobile').css('display') === 'block') {
-          $('.menu-mobile').css('display', 'none');
-          $('.btn-show-menu-mobile').toggleClass('is-active');
+        if ($(".menu-mobile").css("display") === "block") {
+          $(".menu-mobile").css("display", "none");
+          $(".btn-show-menu-mobile").toggleClass("is-active");
         }
 
-        $('.sub-menu-m').each(function () {
-          if ($(this).css('display') === 'block') {
-            $(this).css('display', 'none');
-            $(arrowMainMenu).removeClass('turn-arrow-main-menu-m');
+        $(".sub-menu-m").each(function () {
+          if ($(this).css("display") === "block") {
+            $(this).css("display", "none");
+            $(arrowMainMenu).removeClass("turn-arrow-main-menu-m");
           }
         });
-
       }
     });
-  } catch (er) { console.log(er); }
+  } catch (er) {
+    console.log(er);
+  }
 }

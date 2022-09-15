@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-	<title>Category Page v1</title>
+	<title id="title">Category Page v1</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<!--===============================================================================================-->
@@ -87,21 +87,18 @@
 		<div class="bg0 flex-wr-sb-c p-rl-20 p-tb-8">
 			<div class="f2-s-1 p-r-30 m-tb-6">
 				<a href="index.html" class="breadcrumb-item f1-s-3 cl9">
-					Home
+					Trang chủ
 				</a>
 
-				<a href="category-02.html" class="breadcrumb-item f1-s-3 cl9">
-					Category
-				</a>
-
-				<span class="breadcrumb-item f1-s-3 cl9">
+				<span class="breadcrumb-item f1-s-3 cl9" id="category">
 					Entertaiment
 				</span>
 			</div>
 
 			<div class="pos-relative size-a-2 bo-1-rad-22 of-hidden bocl11 m-tb-6">
-				<input class="f1-s-1 cl6 plh9 s-full p-l-25 p-r-45" type="text" name="search" placeholder="Search">
-				<button class="flex-c-c size-a-1 ab-t-r fs-20 cl2 hov-cl10 trans-03">
+				<input class="f1-s-1 cl6 plh9 s-full p-l-25 p-r-45" type="text" name="search" placeholder="Tìm kiếm"
+					id="input-search">
+				<button class="flex-c-c size-a-1 ab-t-r fs-20 cl2 hov-cl10 trans-03" id="btn-search">
 					<i class="zmdi zmdi-search"></i>
 				</button>
 			</div>
@@ -506,8 +503,12 @@
 
 					<!-- Pagination -->
 					<div class="flex-wr-s-c m-rl--7 p-t-15">
-						<a href="#" class="flex-c-c pagi-item hov-btn1 trans-03 m-all-7 pagi-active">1</a>
-						<a href="#" class="flex-c-c pagi-item hov-btn1 trans-03 m-all-7">2</a>
+						<a href="#" class="flex-c-c pagi-item hov-btn1 trans-03 m-all-7" id="btn-page-prev">&laquo;</a>
+						<a href="#" class="flex-c-c pagi-item hov-btn1 trans-03 m-all-7 pagi-active"
+							id="btn-page-one">1</a>
+						<a href="#" class="flex-c-c pagi-item hov-btn1 trans-03 m-all-7" id="btn-page-two">2</a>
+						<a href="#" class="flex-c-c pagi-item hov-btn1 trans-03 m-all-7" id="btn-page-three">3</a>
+						<a href="#" class="flex-c-c pagi-item hov-btn1 trans-03 m-all-7" id="btn-page-next">&raquo;</a>
 					</div>
 				</div>
 
@@ -841,6 +842,11 @@
 	<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
 	<!--===============================================================================================-->
 	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+	<script src="vendor/dayjs/dayjs.min.js"></script>
+	<script src="vendor/dayjs/plugin/relativeTime.js"></script>
+	<script src="vendor/dayjs/locale/vi.js"></script>
+	<script src="js/dayjs-config.js"></script>
+	<script src="js/api.js"></script>
 	<script src="js/main.js"></script>
 	<script src="js/menu.js"></script>
 	<script src="js/category.js"></script>
