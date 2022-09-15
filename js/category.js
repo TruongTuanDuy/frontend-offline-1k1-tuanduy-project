@@ -64,7 +64,7 @@ axios
 
 loadArticle((CURR_PAGE - 1) * LIMIT);
 
-document.addEventListener('click', function (e) {
+document.getElementById('paginate-area').addEventListener('click', function (e) {
   e.preventDefault();
   const ele = e.target;
   if (ele.id === 'btn-page-next') {
