@@ -6,6 +6,15 @@ const title = document.getElementById("title");
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get("id");
 
+const LIMIT = 6;
+let TOTAL = 0;
+let PAGES = 11;
+let CURR_PAGE = 1;
+let PAGE_RANGE = 4;
+let IDX = PAGES - PAGE_RANGE + 1;
+let start = 1;
+let end = start + PAGE_RANGE - 1;
+
 // Search
 document.getElementById('btn-search').addEventListener('click', function () {
   const keyword = document.getElementById("input-search").value;
@@ -53,57 +62,71 @@ axios
     console.log(error);
   });
 
-let paraOffset = 0;
-let paraLimit = 4;
-loadArticle(paraOffset, paraLimit);
+loadArticle((CURR_PAGE - 1) * LIMIT);
 
-document.getElementById('btn-page-prev').addEventListener('click', function () {
-  paraOffset -= paraLimit;
-  loadArticle(paraOffset, paraLimit);
+document.addEventListener('click', function (e) {
+  e.preventDefault();
+  const ele = e.target;
+  if (ele.id === 'btn-page-next') {
+    CURR_PAGE++;
+    loadArticle((CURR_PAGE - 1) * LIMIT);
+  }
+
+  if (ele.id === 'btn-page-prev') {
+    if (CURR_PAGE === start) {
+      end = CURR_PAGE - 1;
+      start = end - PAGE_RANGE + 1;
+    }
+
+    CURR_PAGE--;
+    loadArticle((CURR_PAGE - 1) * LIMIT);
+  }
+
+  if (ele.classList.contains('my-pagi-item')) {
+    CURR_PAGE = parseInt(ele.innerText);
+    loadArticle((CURR_PAGE - 1) * LIMIT);
+  }
 })
 
-document.getElementById('btn-page-next').addEventListener('click', function () {
-  paraOffset += paraLimit;
-  if (document.querySelector('.pagi-active').nextElementSibling.id == 'btn-page-next') {
-    document.getElementById('btn-page-one').innerHTML = parseInt(document.getElementById('btn-page-one').textContent) + 3;
-    document.getElementById('btn-page-two').innerHTML = parseInt(document.getElementById('btn-page-two').textContent) + 3;
-    document.getElementById('btn-page-three').innerHTML = parseInt(document.getElementById('btn-page-three').textContent) + 3;
-    document.querySelector('.pagi-active').classList.remove('pagi-active');
-    document.getElementById('btn-page-one').classList.add('pagi-active');
-    console.log(paraOffset);
-  };
-  document.querySelector('.pagi-active').nextElementSibling.classList.add('pagi-active');
-  document.querySelector('.pagi-active').classList.remove('pagi-active');
-  loadArticle(paraOffset, paraLimit);
-})
+function renderPagination() {
+  let htmlPaginate = '';
 
-document.getElementById('btn-page-one').addEventListener('click', function () {
-  paraOffset = paraLimit * 0;
-  document.querySelector('.pagi-active').classList.remove('pagi-active');
-  document.getElementById('btn-page-one').classList.add('pagi-active');
-  loadArticle(paraOffset, paraLimit);
-})
+  if (CURR_PAGE !== 1 && CURR_PAGE % PAGE_RANGE === 1) {
+    start = CURR_PAGE;
+    end = start + PAGE_RANGE - 1;
+  }
 
-document.getElementById('btn-page-two').addEventListener('click', function () {
-  paraOffset = paraLimit * 1;
-  document.querySelector('.pagi-active').classList.remove('pagi-active');
-  document.getElementById('btn-page-two').classList.add('pagi-active');
-  loadArticle(paraOffset, paraLimit);
-})
-
-document.getElementById('btn-page-three').addEventListener('click', function () {
-  paraOffset = paraLimit * 2;
-  document.querySelector('.pagi-active').classList.remove('pagi-active');
-  document.getElementById('btn-page-three').classList.add('pagi-active');
-  loadArticle(paraOffset, paraLimit);
-})
+  if (end >= PAGES) {
+    end = PAGES;
+    start = end - PAGE_RANGE + 1;
+  }
 
 
-function loadArticle(offset, limit) {
+  for (let index = start; index <= end; index++) {
+    const activeClass = index === CURR_PAGE ? 'pagi-active' : '';
+    htmlPaginate += `<a href="#" class="flex-c-c pagi-item hov-btn1 trans-03 m-all-7 my-pagi-item ${activeClass}">${index}</a>`
+  }
+
+  const firstPageClass = CURR_PAGE === 1 ? 'pagi-item-disabled' : '';
+  const lastPageClass = CURR_PAGE === PAGES ? 'pagi-item-disabled' : '';
+  htmlPaginate = `
+    <a href="#" class="flex-c-c pagi-item hov-btn1 trans-03 m-all-7 ${firstPageClass}" id="btn-page-prev">&laquo;</a>
+    ${htmlPaginate}
+    <a href="#" class="flex-c-c pagi-item hov-btn1 trans-03 m-all-7 ${lastPageClass}" id="btn-page-next">&raquo;</a>
+    `;
+
+  document.getElementById('paginate-area').innerHTML = htmlPaginate;
+}
+
+function loadArticle(offset) {
+  console.log('CURR_PAGE', CURR_PAGE);
+  console.log('start', start);
+  console.log('end', end);
+
   // Articles
   axios
     .get(
-      `https://apiforlearning.zendvn.com/api/categories_news/${id}/articles?offset=${offset}&limit=${limit}&sort_by=id&sort_dir=desc`
+      `https://apiforlearning.zendvn.com/api/categories_news/${id}/articles?offset=${offset}&limit=${LIMIT}&sort_by=id&sort_dir=desc`
     )
     .then(function (response) {
       // handle success
@@ -118,12 +141,13 @@ function loadArticle(offset, limit) {
         articleItem += renderArticleItem(articleList[i]);
       }
       articles.innerHTML = articleItem;
+
+      renderPagination();
     })
     .catch(function (error) {
       // handle error
       console.log(error);
     });
-
 }
 
 function renderArticleItem(item) {

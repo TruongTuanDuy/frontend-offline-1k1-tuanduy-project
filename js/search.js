@@ -4,8 +4,8 @@ const category = document.getElementById("category");
 const title = document.getElementById("title");
 
 const urlParams = new URLSearchParams(window.location.search);
-const keyword = urlParams.get("keyword");
-console.log(keyword);
+const q = urlParams.get("keyword");
+console.log(q);
 
 // Search
 document.getElementById('btn-search').addEventListener('click', function () {
@@ -22,37 +22,37 @@ document.getElementById("input-search").addEventListener("keypress", function (e
 });
 
 
-let paraOffset = 0;
-let paraLimit = 4;
-loadArticle(keyword, paraOffset, paraLimit);
+let offset = 0;
+let limit = 4;
+loadArticle({ q, offset, limit });
 
 document.getElementById('btn-page-prev').addEventListener('click', function () {
-  paraOffset -= paraLimit;
-  loadArticle(keyword, paraOffset, paraLimit);
+  offset -= limit;
+  loadArticle({ q, offset, limit });
 })
 
 document.getElementById('btn-page-next').addEventListener('click', function () {
-  paraOffset += paraLimit;
-  loadArticle(keyword, paraOffset, paraLimit);
+  offset += limit;
+  loadArticle({ q, offset, limit });
 })
 
-
-function loadArticle(key, offset, limit) {
+// search?q=${key}&offset=${offset}&limit=${limit}
+function loadArticle(params) {
   // Articles
   axios
     .get(
-      `https://apiforlearning.zendvn.com/api/articles/search?q=${key}&offset=${offset}&limit=${limit}&sort_by=id&sort_dir=desc`
+      `articles/search`, { params }
     )
     .then(function (response) {
       // handle success
 
       const articleList = response.data;
-      document.getElementById("page-heading").textContent = `Tìm kiếm với từ: "${key}"`;
+      document.getElementById("page-heading").textContent = `Tìm kiếm với từ: "${params.q}"`;
       category.innerHTML = "Tìm kiếm"
 
       let articleItem = ``;
       for (var i = 0; i < articleList.length; i++) {
-        articleItem += renderArticleItem(articleList[i], key);
+        articleItem += renderArticleItem(articleList[i], params.q);
       }
       articles.innerHTML = articleItem;
     })

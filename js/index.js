@@ -16,8 +16,8 @@ document.getElementById('btn-load-more').addEventListener('click', function () {
 
 // Search
 document.getElementById('btn-search').addEventListener('click', function () {
-  const keyword = document.getElementById("input-search").value;
-  console.log(keyword);
+  let keyword = document.getElementById("input-search").value;
+  keyword = keyword.replace(/[\s]+/g, ' ');
   window.location.href = 'search.html?keyword=' + keyword;
 })
 document.getElementById("input-search").addEventListener("keypress", function (event) {

@@ -29,6 +29,15 @@
 		.main-menu>li>a::after {
 			content: "";
 		}
+
+		.pagi-item-disabled {
+			pointer-events: none;
+			background-color: #ccc;
+		}
+
+		.pagi-active {
+			pointer-events: none;
+		}
 	</style>
 </head>
 
@@ -502,7 +511,7 @@
 					</div>
 
 					<!-- Pagination -->
-					<div class="flex-wr-s-c m-rl--7 p-t-15">
+					<div class="flex-wr-s-c m-rl--7 p-t-15" id="paginate-area">
 						<a href="#" class="flex-c-c pagi-item hov-btn1 trans-03 m-all-7" id="btn-page-prev">&laquo;</a>
 						<a href="#" class="flex-c-c pagi-item hov-btn1 trans-03 m-all-7 pagi-active"
 							id="btn-page-one">1</a>
