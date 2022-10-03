@@ -1,4 +1,5 @@
 const article = document.getElementById("article");
+const postComment = document.getElementById("btn-post-comment");
 const heart = document.getElementsByClassName("heart");
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -6,6 +7,26 @@ const id = urlParams.get("id");
 
 let original = loadStorage();
 let idString = id.toString();
+
+
+// Post comment
+document.postComment.addEventListener('click', function (e) {
+  // e.preventDefault();
+  const ele = e.target;
+  console.log(ele.id);
+  //   if (ele.className === "fas fa-heart heart") {
+  //     if (!original.includes(idString)) {
+  //       ele.style.color = "#17b978"
+  //       original.push(idString);
+  //       saveStorage(original);
+  //     }
+  //     else {
+  //       ele.style.color = "lightgray"
+  //       original = original.filter(item => item !== idString)
+  //       saveStorage(original);
+  //     }
+  //   }
+})
 
 
 // Content
