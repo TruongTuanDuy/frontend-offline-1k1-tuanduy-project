@@ -67,7 +67,7 @@ function renderArticleItem(item, key = '') {
 
   let title = item.title;
   if (key) {
-    let regex = new RegExp(key, "gi");
+    let regex = new RegExp(key, "gi");  // RẤT HAY
     title = title.replace(regex, function (match) {
       return `<mark>${match}</mark>`;
     });

@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-	<title>Blog Detail With Sidebar</title>
+	<title>Bài viết</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<!--===============================================================================================-->
@@ -25,11 +25,6 @@
 	<!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="css/main.css">
 	<!--===============================================================================================-->
-	<style>
-		.main-menu>li>a::after {
-			content: "";
-		}
-	</style>
 </head>
 
 <body class="animsition">
@@ -87,14 +82,14 @@
 		<div class="headline bg0 flex-wr-sb-c p-rl-20 p-tb-8">
 			<div class="f2-s-1 p-r-30 m-tb-6">
 				<a href="index.html" class="breadcrumb-item f1-s-3 cl9">
-					Home
+					Trang chủ
 				</a>
 
-				<a href="blog-list-01.html" class="breadcrumb-item f1-s-3 cl9">
+				<a href="blog-list-01.html" class="breadcrumb-item f1-s-3 cl9" id="category">
 					Blog
 				</a>
 
-				<span class="breadcrumb-item f1-s-3 cl9">
+				<span class="breadcrumb-item f1-s-3 cl9" id="article-title">
 					Nulla non interdum metus non laoreet nisi tellus eget aliquam lorem pellentesque
 				</span>
 			</div>
@@ -144,6 +139,8 @@
 								<a href="#" class="f1-s-3 cl8 hov-cl10 trans-03 m-r-15">
 									0 Comment
 								</a>
+								<button><i style="color:lightgray" class="fas fa-heart heart"></i></button>
+								<span class="number-heart">0000</span>
 							</div>
 
 							<div class="wrap-pic-max-w p-b-30">
@@ -230,7 +227,7 @@
 						<!-- Leave a comment -->
 						<div>
 							<h4 class="f1-l-4 cl3 p-b-12">
-								Leave a Comment
+								Để lại bình luận
 							</h4>
 
 							<p class="f1-s-13 cl8 p-b-40">
@@ -239,10 +236,10 @@
 
 							<form>
 								<textarea class="bo-1-rad-3 bocl13 size-a-15 f1-s-13 cl5 plh6 p-rl-18 p-tb-14 m-b-20"
-									name="msg" placeholder="Comment..."></textarea>
+									name="msg" placeholder="Bình luận..."></textarea>
 
 								<input class="bo-1-rad-3 bocl13 size-a-16 f1-s-13 cl5 plh6 p-rl-18 m-b-20" type="text"
-									name="name" placeholder="Name*">
+									name="name" placeholder="Tên*">
 
 								<input class="bo-1-rad-3 bocl13 size-a-16 f1-s-13 cl5 plh6 p-rl-18 m-b-20" type="text"
 									name="email" placeholder="Email*">
@@ -251,10 +248,82 @@
 									name="website" placeholder="Website">
 
 								<button class="size-a-17 bg2 borad-3 f1-s-12 cl0 hov-btn1 trans-03 p-rl-15 m-t-10">
-									Post Comment
+									Gửi bình luận
 								</button>
 							</form>
 						</div>
+
+						<!-- Comment -->
+						<br>
+						<br>
+						<div class="comments">
+							<h4 class="f1-l-4 cl3 p-b-12">
+								30 Bình luận
+							</h4>
+
+							<div class="comment-list">
+								<div class="item">
+									<div class="user">
+										<figure>
+											<img src="images/icons/IMG_20190713_195112.jpg">
+										</figure>
+										<div class="details">
+											<h5 class="name">Mark Otto</h5>
+											<div class="time">24 Hours</div>
+											<div class="description">
+												Khi nào xong.
+											</div>
+											<footer>
+												<a href="#">Reply</a>
+											</footer>
+										</div>
+									</div>
+
+								</div>
+
+								<div class="item">
+									<div class="user">
+										<figure>
+											<img src="images/icons/IMG_20190713_195112.jpg">
+										</figure>
+										<div class="details">
+											<h5 class="name">Mark Otto</h5>
+											<div class="time">24 Hours</div>
+											<div class="description">
+												Khi nào xong.
+											</div>
+											<footer>
+												<a href="#">Reply</a>
+											</footer>
+										</div>
+									</div>
+									<div class="reply-list">
+										<div class="item">
+											<div class="user">
+												<figure>
+													<img src="images/icons/favicon.png">
+												</figure>
+												<div class="details">
+													<h5 class="name">Mark Otto</h5>
+													<div class="time">24 Hours</div>
+													<div class="description">
+														Khi nào xong. Xong khi nào.
+													</div>
+													<footer>
+														<a href="#">Reply</a>
+													</footer>
+												</div>
+											</div>
+										</div>
+									</div>
+
+								</div>
+
+							</div>
+
+						</div>
+
+
 					</div>
 				</div>
 
@@ -752,6 +821,7 @@
 	<script src="vendor/dayjs/plugin/relativeTime.js"></script>
 	<script src="vendor/dayjs/locale/vi.js"></script>
 	<script src="js/dayjs-config.js"></script>
+	<script src="js/api.js"></script>
 	<script src="js/main.js"></script>
 	<script src="js/menu.js"></script>
 	<script src="js/detail.js"></script>

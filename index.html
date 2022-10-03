@@ -29,6 +29,21 @@
     .main-menu>li>a::after {
       content: "";
     }
+
+    /* .p-b-2 {
+      position: relative;
+    }
+
+    .heart {
+      top: 0px;
+      right: 0px;
+    } */
+
+    /* .love-bar {
+      display: flex;
+      justify-content: space-between;
+      text-align: right;
+    } */
   </style>
 </head>
 
@@ -471,38 +486,24 @@
               </ul>
             </div>
 
-            <!-- Video -->
+            <!-- Weather -->
             <div class="p-b-55">
               <div class="how2 how2-cl4 flex-s-c m-b-35">
-                <h3 class="f1-m-2 cl3 tab01-title">Featured Video</h3>
+                <h3 class="f1-m-2 cl3 tab01-title">Thời tiết</h3>
               </div>
 
-              <div>
-                <div class="wrap-pic-w pos-relative">
-                  <img src="images/video-01.jpg" alt="IMG" />
-
-                  <button class="s-full ab-t-l flex-c-c fs-32 cl0 hov-cl10 trans-03" data-toggle="modal"
-                    data-target="#modal-video-01">
-                    <span class="fab fa-youtube"></span>
-                  </button>
+              <div id="weather">
+                <div class="search" style="display:flex;margin-bottom:20px;">
+                  <input type="text" id="search-bar" placeholder="Tìm kiếm địa điểm">
+                  <button id="search-btn"><span style="margin:10px">Tìm</span></button>
                 </div>
-
-                <div class="p-tb-16 p-rl-25 bg3">
-                  <h5 class="p-b-5">
-                    <a href="#" class="f1-m-3 cl0 hov-cl10 trans-03">
-                      Music lorem ipsum dolor sit amet consectetur
-                    </a>
-                  </h5>
-
-                  <span class="cl15">
-                    <a href="#" class="f1-s-4 cl8 hov-cl10 trans-03">
-                      by John Alvarado
-                    </a>
-
-                    <span class="f1-s-3 m-rl-3"> - </span>
-
-                    <span class="f1-s-3"> Feb 18 </span>
-                  </span>
+                <img id="cloud" style="width:25%" src="https://openweathermap.org/img/wn/04n.png" alt="" />
+                <div id="loading">
+                  <div id="city"></div>
+                  <div id="description"></div>
+                  <div id="temp"></div>
+                  <div><span id="humidity"></span></div>
+                  <div><span id="wind"></span></div>
                 </div>
               </div>
             </div>
@@ -1045,6 +1046,7 @@
   <script src="js/menu.js"></script>
   <script src="js/index.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/weather.js"></script>
 </body>
 
 </html>

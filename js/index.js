@@ -5,8 +5,13 @@ const entertainment = document.getElementById("entertainment"); // Thế giới
 const business = document.getElementById("business"); // Thời sự
 const technology = document.getElementById("technology"); // Kinh doanh
 const lastest = document.getElementById("lastest");
+
+let original = loadStorage();
+
+
 let paraLimit = 5;
 loadLatest(paraLimit);
+
 
 // Load More
 document.getElementById('btn-load-more').addEventListener('click', function () {
@@ -26,7 +31,6 @@ document.getElementById("input-search").addEventListener("keypress", function (e
     document.getElementById("btn-search").click();
   }
 });
-
 
 function loadLatest(limit) {
   // Lastest
@@ -53,7 +57,9 @@ function loadLatest(limit) {
             </a>
           </h5>
           <div class="cl8 p-b-18">
-            <span class="f1-s-3"> ${pubDate} </span>
+          <span class="f1-s-3"> ${pubDate} </span>
+          <button><i style="color:${(original.includes(lastestList[i].id.toString())) ? "#17b978" : "lightgray"}" class="fas fa-heart heart" id="${lastestList[i].id}"></i></button>
+          <span class="number-heart">0000</span>
           </div>
           <p class="f1-s-1 cl6 p-b-24">
           ${lastestList[i].description}
@@ -67,6 +73,8 @@ function loadLatest(limit) {
       // handle error
       console.log(error);
     });
+  // arrHeart = document.getElementsByClassName("heart");
+
 }
 
 
@@ -97,18 +105,14 @@ axios
             </a>
           </h5>
 
-          <span class="cl8">
-            <a href="#" class="f1-s-4 cl8 hov-cl10 trans-03">
-              Finance
-            </a>
-
-            <span class="f1-s-3 m-rl-3"> - </span>
-
-            <span class="f1-s-3"> ${pubDate} </span>
+          <span class="cl8 love-bar">
+          <span class="f1-s-3"> ${pubDate} </span>
+          <button><i style="color:${(original.includes(postList[i].id.toString())) ? "#17b978" : "lightgray"}" class="fas fa-heart heart" id="${postList[i].id}"></i></button>
+          <span class="number-heart">0000</span>
           </span>
-        </div>
       </div>
-`;
+      </div>
+      `;
       } else {
         content += `
         <!-- Item post -->
@@ -124,20 +128,16 @@ axios
             </a>
           </h5>
 
-          <span class="cl8">
-            <a href="#" class="f1-s-6 cl8 hov-cl10 trans-03">
-              Small Business
-            </a>
-
-            <span class="f1-s-3 m-rl-3"> - </span>
-
-            <span class="f1-s-3"> ${pubDate} </span>
+          <span class="cl8 love-bar">
+          <span class="f1-s-3"> ${pubDate} </span>
+          <button><i style="color:${(original.includes(postList[i].id.toString())) ? "#17b978" : "lightgray"}" class="fas fa-heart heart" id="${postList[i].id}"></i></button>
+          <span class="number-heart">0000</span>
           </span>
-        </div>
+      </div>
       </div>
 `      }
     }
-    content = `                <div class="how2 how2-cl2 flex-sb-c m-b-35">
+    content = `<div class="how2 how2-cl2 flex-sb-c m-b-35">
     <h3 class="f1-m-2 cl13 tab01-title">${postList[0].category.name}</h3>
 
     <a href="category-01.html" class="tab01-link f1-s-1 cl9 hov-cl10 trans-03">
@@ -149,6 +149,7 @@ axios
       + content +
       `</div>`
     technology.innerHTML = content;
+
   })
   .catch(function (error) {
     // handle error
@@ -181,16 +182,12 @@ axios
             </a>
           </h5>
 
-          <span class="cl8">
-            <a href="#" class="f1-s-4 cl8 hov-cl10 trans-03">
-              Finance
-            </a>
-
-            <span class="f1-s-3 m-rl-3"> - </span>
-
-            <span class="f1-s-3"> ${pubDate} </span>
+          <span class="cl8 love-bar">
+          <span class="f1-s-3"> ${pubDate} </span>
+          <button><i style="color:${(original.includes(postList[i].id.toString())) ? "#17b978" : "lightgray"}" class="fas fa-heart heart" id="${postList[i].id}"></i></button>
+          <span class="number-heart">0000</span>
           </span>
-        </div>
+      </div>
       </div>
 `;
       } else {
@@ -208,16 +205,12 @@ axios
             </a>
           </h5>
 
-          <span class="cl8">
-            <a href="#" class="f1-s-6 cl8 hov-cl10 trans-03">
-              Small Business
-            </a>
-
-            <span class="f1-s-3 m-rl-3"> - </span>
-
-            <span class="f1-s-3"> ${pubDate} </span>
+          <span class="cl8 love-bar">
+          <span class="f1-s-3"> ${pubDate} </span>
+          <button><i style="color:${(original.includes(postList[i].id.toString())) ? "#17b978" : "lightgray"}" class="fas fa-heart heart" id="${postList[i].id}"></i></button>
+          <span class="number-heart">0000</span>
           </span>
-        </div>
+      </div>
       </div>
 `      }
     }
@@ -265,9 +258,11 @@ axios
               </a>
             </h5>
 
-            <span class="cl8">
+            <span class="cl8 love-bar">
             <span class="f1-s-3"> ${pubDate} </span>
-            </span>
+            <button><i style="color:${(original.includes(postList[i].id.toString())) ? "#17b978" : "lightgray"}" class="fas fa-heart heart" id="${postList[i].id}"></i></button>
+            <span class="number-heart">0000</span>
+              </span>
           </div>
         </div>
       </div>
@@ -288,9 +283,11 @@ axios
               </a>
             </h5>
 
-            <span class="cl8">
-              <span class="f1-s-3"> ${pubDate} </span>
-            </span>
+            <span class="cl8 love-bar">
+            <span class="f1-s-3"> ${pubDate} </span>
+            <button><i style="color:${(original.includes(postList[i].id.toString())) ? "#17b978" : "lightgray"}" class="fas fa-heart heart" id="${postList[i].id}"></i></button>
+            <span class="number-heart">0000</span>
+              </span>
           </div>
         </div>`
       }
@@ -331,12 +328,12 @@ axios
       <div class="col-sm-6 col-lg-4 p-rl-1 p-b-2">
         <div class="bg-img1 size-a-12 how1 pos-relative" style="background-image: url(${featuresList[i].thumb})">
           <a href="${detailLink}" class="dis-block how1-child1 trans-03"></a>
-
           <div class="flex-col-e-s s-full p-rl-25 p-tb-11">
             <a href="${categoryLink}" class="dis-block how1-child2 f1-s-2 cl0 bo-all-1 bocl0 hov-btn1 trans-03 p-rl-5 p-t-2">${featuresList[i].category.name}</a>
-
             <h3 class="how1-child2 m-t-10">
               <a href="${detailLink}" class="f1-m-1 cl0 hov-cl10 trans-03">${featuresList[i].title}</a>
+              <button><i style="color:${(original.includes(featuresList[i].id.toString())) ? "#17b978" : "lightgray"}" class="fas fa-heart heart" id="${featuresList[i].id}"></i></button>
+              <span class="number-heart">0000</span>
             </h3>
           </div>
         </div>
@@ -374,6 +371,36 @@ axios
     console.log(error);
   });
 
+
+// LOVE HEART
+document.addEventListener('click', function (e) {
+  // e.preventDefault();
+  const ele = e.target;
+  console.log(ele.className);
+  let id = ele.id;
+  if (ele.className === "fas fa-heart heart") {
+    if (!original.includes(id)) {
+      ele.style.color = "#17b978"
+      original.push(id);
+      saveStorage(original);
+    }
+    else {
+      ele.style.color = "lightgray"
+      original = original.filter(item => item !== id)
+      saveStorage(original);
+    }
+  }
+})
+
+function loadStorage() {
+  let data = JSON.parse(localStorage.getItem('favorite'));
+  if (!data) data = [];
+  return data;
+}
+
+function saveStorage(data) {
+  localStorage.setItem('favorite', JSON.stringify(data));
+}
 
 function addEventForMobileMenu() {
   try {

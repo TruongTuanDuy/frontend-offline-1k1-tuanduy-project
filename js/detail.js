@@ -1,41 +1,11 @@
 const article = document.getElementById("article");
+const heart = document.getElementsByClassName("heart");
 
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get("id");
 
-
-
-// Top Articles
-axios
-  .get("https://apiforlearning.zendvn.com/api/articles/top-articles?limit=6")
-  .then(function (response) {
-    // handle success
-    const featuresList = response.data;
-    let feature = ``;
-    for (var i = 0; i < featuresList.length; i++) {
-      const categoryLink = "category.html?id=" + featuresList[i].category_id;
-      const detailLink = "detail.html?id=" + featuresList[i].id;
-      feature += `
-      <div class="col-sm-6 col-lg-4 p-rl-1 p-b-2">
-        <div class="bg-img1 size-a-12 how1 pos-relative" style="background-image: url(${featuresList[i].thumb})">
-          <a href="${detailLink}" class="dis-block how1-child1 trans-03"></a>
-
-          <div class="flex-col-e-s s-full p-rl-25 p-tb-11">
-            <a href="${categoryLink}" class="dis-block how1-child2 f1-s-2 cl0 bo-all-1 bocl0 hov-btn1 trans-03 p-rl-5 p-t-2">${featuresList[i].category.name}</a>
-
-            <h3 class="how1-child2 m-t-10">
-              <a href="${detailLink}" class="f1-m-1 cl0 hov-cl10 trans-03">${featuresList[i].title}</a>
-            </h3>
-          </div>
-        </div>
-      </div>`;
-    }
-    featurePost.innerHTML = feature;
-  })
-  .catch(function (error) {
-    // handle error
-    console.log(error);
-  });
+let original = loadStorage();
+let idString = id.toString();
 
 
 // Content
@@ -44,29 +14,60 @@ axios
     `https://apiforlearning.zendvn.com/api/articles/${id}`
   )
   .then(function (response) {
-    console.log(response);
+    // console.log(response);
     // handle success
 
     const articleContent = response.data;
 
-    let currentTime = new Date().getTime()
-    let publishTime = new Date(articleContent.publish_date).getTime();
+    // let currentTime = new Date().getTime()
+    // let publishTime = new Date(articleContent.publish_date).getTime();
     var time = dayjs(articleContent.publish_date).fromNow();
 
-    let content = `<div class="p-b-70" id="article">
-    <a href="#" class="f1-s-10 cl2 hov-cl10 trans-03 text-uppercase">${articleContent.category.name}</a>
-    <h3 class="f1-l-3 cl2 p-b-16 p-t-33 respon2">${articleContent.title}</h3>
+    document.getElementById("category").innerHTML = articleContent.category.name;
+    document.getElementById("category").href = `category.html?id=${articleContent.category.id}`;
+    document.getElementById("article-title").innerHTML = articleContent.title;
+
+    // <div class="p-b-70" id="article">
+    let content = `
+      <a href="#" class="f1-s-10 cl2 hov-cl10 trans-03 text-uppercase">
+      ${articleContent.category.name}
+    </a>
+
+    <h3 class="f1-l-3 cl2 p-b-16 p-t-33 respon2">
+    ${articleContent.title}
+    </h3>
+
     <div class="flex-wr-s-s p-b-40">
       <span class="f1-s-3 cl8 m-r-15">
-        <a href="#" class="f1-s-4 cl8 hov-cl10 trans-03">by John Alvarado</a>
+        <a href="#" class="f1-s-4 cl8 hov-cl10 trans-03">
+          by John Alvarado
+        </a>
+
         <span class="m-rl-3">-</span>
-        <span>${time}</span>
+
+        <span>
+        ${time}
+        </span>
       </span>
-      <span class="f1-s-3 cl8 m-r-15">5239 Views</span>
-      <a href="#" class="f1-s-3 cl8 hov-cl10 trans-03 m-r-15">0 Comment</a>
+
+      <span class="f1-s-3 cl8 m-r-15">
+        5239 Views
+      </span>
+
+      <a href="#" class="f1-s-3 cl8 hov-cl10 trans-03 m-r-15">
+        0 Comment
+      </a>
+      <button><i style="color:lightgray" class="fas fa-heart heart"></i></button>
+      <span class="number-heart">0000</span>
     </div>
-    <div class="wrap-pic-max-w p-b-30"><img src="${articleContent.thumb}"></div>
-    <div class="f1-s-11 cl6 p-b-25">${articleContent.content}</div>
+
+    <div class="wrap-pic-max-w p-b-30">
+      <img src="${articleContent.thumb}" alt="IMG">
+    </div>
+
+    <p class="f1-s-11 cl6 p-b-25">
+    ${articleContent.content}
+    </p>
 
     <!-- Tag -->
     <div class="flex-s-s p-t-12 p-b-15">
@@ -117,15 +118,44 @@ axios
         </a>
       </div>
     </div>
-  </div>
-`;
 
+`;
     article.innerHTML = content;
+    if (original.includes(idString)) heart[0].style.color = "#17b978";
   })
   .catch(function (error) {
     // handle error
     console.log(error);
   });
+
+// LOVE HEART
+document.addEventListener('click', function (e) {
+  // e.preventDefault();
+  const ele = e.target;
+  console.log(ele.className);
+  if (ele.className === "fas fa-heart heart") {
+    if (!original.includes(idString)) {
+      ele.style.color = "#17b978"
+      original.push(idString);
+      saveStorage(original);
+    }
+    else {
+      ele.style.color = "lightgray"
+      original = original.filter(item => item !== idString)
+      saveStorage(original);
+    }
+  }
+})
+
+function loadStorage() {
+  let data = JSON.parse(localStorage.getItem('favorite'));
+  if (!data) data = [];
+  return data;
+}
+
+function saveStorage(data) {
+  localStorage.setItem('favorite', JSON.stringify(data));
+}
 
 function addEventForMobileMenu() {
   try {
@@ -163,35 +193,35 @@ function addEventForMobileMenu() {
   }
 }
 
-function millisecondsToStr(milliseconds) {
-  // TIP: to find current time in milliseconds, use:
-  // var  current_time_milliseconds = new Date().getTime();
+// function millisecondsToStr(milliseconds) {
+//   // TIP: to find current time in milliseconds, use:
+//   // var  current_time_milliseconds = new Date().getTime();
 
-  function numberEnding(number) {
-    return (number > 1) ? 's' : '';
-  }
+//   function numberEnding(number) {
+//     return (number > 1) ? 's' : '';
+//   }
 
-  var temp = Math.floor(milliseconds / 1000);
-  var years = Math.floor(temp / 31536000);
-  if (years) {
-    return years + ' year' + numberEnding(years);
-  }
-  //TODO: Months! Maybe weeks? 
-  var days = Math.floor((temp %= 31536000) / 86400);
-  if (days) {
-    return days + ' day' + numberEnding(days);
-  }
-  var hours = Math.floor((temp %= 86400) / 3600);
-  if (hours) {
-    return hours + ' hour' + numberEnding(hours);
-  }
-  var minutes = Math.floor((temp %= 3600) / 60);
-  if (minutes) {
-    return minutes + ' minute' + numberEnding(minutes);
-  }
-  var seconds = temp % 60;
-  if (seconds) {
-    return seconds + ' second' + numberEnding(seconds);
-  }
-  return 'less than a second'; //'just now' //or other string you like;
-}
+//   var temp = Math.floor(milliseconds / 1000);
+//   var years = Math.floor(temp / 31536000);
+//   if (years) {
+//     return years + ' year' + numberEnding(years);
+//   }
+//   //TODO: Months! Maybe weeks?
+//   var days = Math.floor((temp %= 31536000) / 86400);
+//   if (days) {
+//     return days + ' day' + numberEnding(days);
+//   }
+//   var hours = Math.floor((temp %= 86400) / 3600);
+//   if (hours) {
+//     return hours + ' hour' + numberEnding(hours);
+//   }
+//   var minutes = Math.floor((temp %= 3600) / 60);
+//   if (minutes) {
+//     return minutes + ' minute' + numberEnding(minutes);
+//   }
+//   var seconds = temp % 60;
+//   if (seconds) {
+//     return seconds + ' second' + numberEnding(seconds);
+//   }
+//   return 'less than a second'; //'just now' //or other string you like;
+// }
