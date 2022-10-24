@@ -1,32 +1,106 @@
 const article = document.getElementById("article");
-const postComment = document.getElementById("btn-post-comment");
 const heart = document.getElementsByClassName("heart");
+const postComment = document.getElementById("btn-post-comment");
+const introComment = document.getElementById("intro-comment");
+const inputMsg = document.getElementById("msg");
+const inputName = document.getElementById("name");
 
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get("id");
 
-let original = loadStorage();
-let idString = id.toString();
+const idString = id.toString();
+let favorite = loadStorage('favorite');
+let comments = loadStorage('comments') || {};
+let commentId = "";
 
+let commentArticle = comments.filter(ele => ele.article_id === id);
+commentArticle.forEach(comment => {
+  console.log(comment.parent_id);
+  if (comment.parent_id) {
+    // Cap 2
+    let htmlChildComment = renderCommentItem(comment, false);
+    document.querySelector(`#comment-item-${comment.parent_id} .reply-list`).innerHTML += htmlChildComment;
+  } else {
+    // Cap 1
+    let htmlComment = renderCommentItem(comment);
+    document.querySelector('.comment-list').innerHTML += htmlComment;
+  }
+});
+
+document.addEventListener('click', function (e) {
+  const ele = e.target;
+  if (ele.id === "reply-close") {
+    introComment.innerHTML = "";
+    commentId = "";
+  }
+});
 
 // Post comment
-document.postComment.addEventListener('click', function (e) {
-  // e.preventDefault();
+postComment.addEventListener('click', function (e) {
+  e.preventDefault();
+  const name = inputName.value;
+  const message = inputMsg.value;
+  const newComment = {
+    article_id: id,
+    comment_id: createId(6),
+    name: name,
+    message: message,
+    parent_id: null || commentId,
+    time: new Date()
+  }
+  console.log(newComment.parent_id);
+  if ((name) && (message)) {
+    if (comments) comments.push(newComment)
+    else comments = newComment;
+    saveStorage('comments', comments);
+
+    if (newComment.parent_id) {
+      // Cap 2
+      const htmlChildComment = renderCommentItem(newComment, false);
+      document.querySelector(`#comment-item-${newComment.parent_id} .reply-list`).innerHTML += htmlChildComment;
+    } else {
+      // Cap 1
+      const htmlComment = renderCommentItem(newComment);
+      document.querySelector('.comment-list').innerHTML += htmlComment;
+    }
+
+    inputMsg.focus();
+    inputMsg.value = '';
+  }
+});
+
+// Post Reply
+document.addEventListener('click', function (e) {
   const ele = e.target;
-  console.log(ele.id);
-  //   if (ele.className === "fas fa-heart heart") {
-  //     if (!original.includes(idString)) {
-  //       ele.style.color = "#17b978"
-  //       original.push(idString);
-  //       saveStorage(original);
-  //     }
-  //     else {
-  //       ele.style.color = "lightgray"
-  //       original = original.filter(item => item !== idString)
-  //       saveStorage(original);
-  //     }
-  //   }
+  if (ele.className === "btn-reply") {
+    commentId = ele.id.substr(-6, 6);
+    console.log(commentId);
+    let replyComment = comments.filter(element => element.comment_id === commentId);
+    console.log(replyComment);
+    introComment.innerHTML = `<h3 class="f1-s-13 cl8 p-b-40" id="${replyComment[0].comment_id}">
+    <button><i class="far fa-window-close" id="reply-close"></i></button>
+    Trả lời bình luận của ${replyComment[0].name}:</h3>`
+    inputMsg.focus();
+  }
 })
+
+// RENDER COMMENT
+function renderCommentItem(comment, isParent = true) {
+  const replyList = isParent ? '<div class="reply-list"></div>' : '';
+  return `
+  <div class="item" id="comment-item-${comment.comment_id}">
+    <div class="user">
+      <figure><img src="images/icons/IMG_20190713_195112.jpg"></figure>
+      <div class="details">
+        <h5 class="name">${comment.name}</h5>
+        <div class="time">${comment.time}</div>
+        <div class="description">${comment.message}</div>
+        <footer><a href="#" class="btn-reply" id="reply-item-${comment.comment_id}">Reply</a></footer>
+      </div>
+    </div>
+    ${replyList}
+  </div>
+  `}
 
 
 // Content
@@ -142,7 +216,7 @@ axios
 
 `;
     article.innerHTML = content;
-    if (original.includes(idString)) heart[0].style.color = "#17b978";
+    if (favorite.includes(idString)) heart[0].style.color = "#17b978";
   })
   .catch(function (error) {
     // handle error
@@ -153,29 +227,39 @@ axios
 document.addEventListener('click', function (e) {
   // e.preventDefault();
   const ele = e.target;
-  console.log(ele.className);
   if (ele.className === "fas fa-heart heart") {
-    if (!original.includes(idString)) {
+    if (!favorite.includes(idString)) {
       ele.style.color = "#17b978"
-      original.push(idString);
-      saveStorage(original);
+      favorite.push(idString);
+      saveStorage('favorite', favorite);
     }
     else {
       ele.style.color = "lightgray"
-      original = original.filter(item => item !== idString)
-      saveStorage(original);
+      favorite = favorite.filter(item => item !== idString)
+      saveStorage('favorite', favorite);
     }
   }
 })
 
-function loadStorage() {
-  let data = JSON.parse(localStorage.getItem('favorite'));
+function createId(length = 12) {
+  let result = "";
+  let characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
+function loadStorage(key) {
+  let data = JSON.parse(localStorage.getItem(key));
   if (!data) data = [];
   return data;
 }
 
-function saveStorage(data) {
-  localStorage.setItem('favorite', JSON.stringify(data));
+function saveStorage(key, data) {
+  localStorage.setItem(key, JSON.stringify(data));
 }
 
 function addEventForMobileMenu() {
