@@ -10,8 +10,8 @@ const id = urlParams.get("id");
 
 const idString = id.toString();
 let favorite = loadStorage('favorite');
-let comments = loadStorage('comments') || {};
-let commentId = "";
+let comments = loadStorage('comments');
+let commentId = null;
 
 let commentArticle = comments.filter(ele => ele.article_id === id);
 commentArticle.forEach(comment => {
@@ -31,27 +31,26 @@ document.addEventListener('click', function (e) {
   const ele = e.target;
   if (ele.id === "reply-close") {
     introComment.innerHTML = "";
-    commentId = "";
+    commentId = null;
   }
 });
 
 // Post comment
 postComment.addEventListener('click', function (e) {
   e.preventDefault();
-  const name = inputName.value;
-  const message = inputMsg.value;
+  const name = inputName.value.trim();
+  const message = inputMsg.value.trim();
   const newComment = {
     article_id: id,
     comment_id: createId(6),
     name: name,
     message: message,
-    parent_id: null || commentId,
+    parent_id: commentId,
     time: new Date()
   }
   console.log(newComment.parent_id);
   if ((name) && (message)) {
-    if (comments) comments.push(newComment)
-    else comments = newComment;
+    comments.push(newComment)
     saveStorage('comments', comments);
 
     if (newComment.parent_id) {
@@ -70,17 +69,21 @@ postComment.addEventListener('click', function (e) {
 });
 
 // Post Reply
-document.addEventListener('click', function (e) {
+document.querySelector('.comment-list').addEventListener('click', function (e) {
+  e.preventDefault();
   const ele = e.target;
   if (ele.className === "btn-reply") {
-    commentId = ele.id.substr(-6, 6);
+    // commentId = ele.id.substr(-6, 6);
+    commentId = ele.dataset.id;
     console.log(commentId);
-    let replyComment = comments.filter(element => element.comment_id === commentId);
-    console.log(replyComment);
+    // let replyComment = comments.filter(element => element.comment_id === commentId);
+    // console.log(replyComment);
+    const replyName = ele.dataset.name;
     introComment.innerHTML = `
     <button><i class="far fa-window-close" id="reply-close"></i></button>
-    Trả lời bình luận của @${replyComment[0].name}:`
+    Trả lời bình luận của @${replyName}:`
     inputMsg.focus();
+    document.getElementById('comment-container').scrollIntoView();
   }
 })
 
@@ -95,7 +98,7 @@ function renderCommentItem(comment, isParent = true) {
         <h5 class="name">${comment.name}</h5>
         <div class="time">${comment.time}</div>
         <div class="description">${comment.message}</div>
-        <footer><a href="#" class="btn-reply" id="reply-item-${comment.comment_id}">Reply</a></footer>
+        <footer><a href="#" class="btn-reply" data-name="${comment.name}" data-id="${isParent ? comment.comment_id : comment.parent_id}" id="reply-item-${comment.comment_id}">Reply</a></footer>
       </div>
     </div>
     ${replyList}

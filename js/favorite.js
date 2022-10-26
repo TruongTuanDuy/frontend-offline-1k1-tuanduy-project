@@ -1,5 +1,6 @@
 
 const favorite = document.getElementById("favorite");
+favorite.innerHTML = '';
 
 let original = loadStorage();
 let paraLimit = 2;
@@ -16,9 +17,10 @@ function renderFav() {
         const favoriteItem = response.data;
         const pubDate = dayjs(favoriteItem.publish_date).fromNow();
         const detailLink = 'detail.html?id=' + favoriteItem.id;
-        content += `
-      <!-- Item post -->
-      <div class="flex-wr-sb-s p-t-40 p-b-15 how-bor2">
+        const colorFav = (favList.includes(favoriteItem.id.toString())) ? "#17b978" : "lightgray";
+        const item = document.createElement('div');
+        item.className = 'flex-wr-sb-s p-t-40 p-b-15 how-bor2 fav-item';
+        item.innerHTML = `
         <a href="${detailLink}" class="size-w-8 wrap-pic-w hov1 trans-03 w-full-sr575 m-b-25">
           <img src="${favoriteItem.thumb}" alt="IMG" />
         </a>
@@ -30,22 +32,24 @@ function renderFav() {
           </h5>
           <div class="cl8 p-b-18">
           <span class="f1-s-3"> ${pubDate} </span>
-          <button><i style="color:${(favList.includes(favoriteItem.id.toString())) ? "#17b978" : "lightgray"}" class="fas fa-heart heart" id="${favoriteItem.id}"></i></button>
+          <button><i style="color:${colorFav}" class="fas fa-heart heart" id="${favoriteItem.id}"></i></button>
           <span class="number-heart">0000</span>
           </div>
           <p class="f1-s-1 cl6 p-b-24">
           ${favoriteItem.description}
           </p>
         </div>
-      </div>
-    `
-        favorite.innerHTML = content;
+        `;
+        favorite.append(item);
+
+        // content.innerHTML += '<img src="" alt="" />';
       })
       .catch(function (error) {
         // handle error
         console.log(error);
       });
   }
+
 }
 
 // Load More
@@ -69,26 +73,18 @@ document.getElementById("input-search").addEventListener("keypress", function (e
 
 
 // LOVE HEART
-document.addEventListener('click', function (e) {
+favorite.addEventListener('click', function (e) {
   // e.preventDefault();
   const ele = e.target;
   let id = ele.id;
   if (ele.className === "fas fa-heart heart") {
-    if (!original.includes(id)) {
-      ele.style.color = "#17b978"
-      original.push(id);
-      saveStorage(original);
-      window.alert("Đã thêm yêu thích!");
-    }
-    else {
+      ele.closest('.fav-item').remove();
       ele.style.color = "lightgray"
       original = original.filter(item => item !== id)
       saveStorage(original);
-      window.alert("Đã bỏ yêu thích!");
-
-    }
+      alert("Đã bỏ yêu thích!");
   }
-  renderFav();
+  // renderFav();
 })
 
 function loadStorage() {
