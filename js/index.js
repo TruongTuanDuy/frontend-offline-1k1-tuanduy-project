@@ -383,11 +383,13 @@ document.addEventListener('click', function (e) {
       ele.style.color = "#17b978"
       original.push(id);
       saveStorage(original);
+      window.alert("Đã thêm yêu thích!");
     }
     else {
       ele.style.color = "lightgray"
       original = original.filter(item => item !== id)
       saveStorage(original);
+      window.alert("Đã bỏ yêu thích!");
     }
   }
 })

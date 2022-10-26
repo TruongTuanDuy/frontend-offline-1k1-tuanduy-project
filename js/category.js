@@ -10,7 +10,7 @@ axios
   )
   .then(function (response) {
     const categoryList = response.data;
-    // document.getElementById("page-heading").textContent = categoryList.name;
+    document.getElementById("page-heading").textContent = categoryList.name;
     document.getElementById("category").innerHTML = categoryList.name;
     document.getElementById("title").innerHTML = categoryList.name;
   })
@@ -19,7 +19,7 @@ axios
   });
 
 
-const LIMIT = 7;
+const LIMIT = 6;
 let TOTAL = 0;
 let PAGES = 10;
 let CURR_PAGE = 1;

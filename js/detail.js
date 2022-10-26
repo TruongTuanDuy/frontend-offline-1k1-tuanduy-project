@@ -77,9 +77,9 @@ document.addEventListener('click', function (e) {
     console.log(commentId);
     let replyComment = comments.filter(element => element.comment_id === commentId);
     console.log(replyComment);
-    introComment.innerHTML = `<h3 class="f1-s-13 cl8 p-b-40" id="${replyComment[0].comment_id}">
+    introComment.innerHTML = `
     <button><i class="far fa-window-close" id="reply-close"></i></button>
-    Trả lời bình luận của ${replyComment[0].name}:</h3>`
+    Trả lời bình luận của @${replyComment[0].name}:`
     inputMsg.focus();
   }
 })
